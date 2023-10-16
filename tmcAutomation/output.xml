@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.11.5 on win32)" generated="20231013 16:24:48.139" rpa="false" schemaversion="4">
+<suite id="s1" name="WinSetup" source="c:\tmcAutomation\tests\WinSetup\WinSetup.robot">
+<kw name="Start App" library="Setup" type="SETUP">
+<doc>Sets up the application for quick launching through 'Launch Application' and starts the winappdriver
+Note that the winappdriver must be launched before the test eithe manually or through a script on the target machine</doc>
+<kw name="Open Application" library="ApplicationLibrary.DesktopLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>platformName=Windows</arg>
+<arg>deviceName=Windows</arg>
+<arg>app=${Notepad}</arg>
+<arg>alias=Main</arg>
+<doc>Opens a new application to given Appium server.
+If your application has a splash screen please supply the window name of the final window that will appear.
+For the capabilities of appium server and Windows please check http://appium.io/docs/en/drivers/windows</doc>
+<status status="PASS" starttime="20231013 16:24:48.400" endtime="20231013 16:24:49.016"/>
+</kw>
+<kw name="Maximize Window" library="ApplicationLibrary.DesktopLibrary">
+<doc>Maximizes the current application window.</doc>
+<status status="PASS" starttime="20231013 16:24:49.017" endtime="20231013 16:24:49.063"/>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<arg>1</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<msg timestamp="20231013 16:24:50.065" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20231013 16:24:49.064" endtime="20231013 16:24:50.065"/>
+</kw>
+<kw name="Quit Application" library="ApplicationLibrary.DesktopLibrary">
+<doc>Quit application. Application can be quit while Appium session is kept alive.
+This keyword can be used to close application during test case or between test cases.</doc>
+<status status="PASS" starttime="20231013 16:24:50.065" endtime="20231013 16:24:50.128"/>
+</kw>
+<status status="PASS" starttime="20231013 16:24:48.399" endtime="20231013 16:24:50.128"/>
+</kw>
+<test id="s1-t1" name="Setup Communication Protocol" line="8">
+<kw name="Start WinSetup" library="WinSetup">
+<kw name="Switch Application" library="ApplicationLibrary.DesktopLibrary">
+<arg>Desktop</arg>
+<doc>Switches the active application by index or alias.</doc>
+<status status="PASS" starttime="20231013 16:24:50.130" endtime="20231013 16:24:50.130"/>
+</kw>
+<kw name="Run Keyword And Return Status" library="BuiltIn">
+<var>${Result}</var>
+<arg>Switch Application By Name</arg>
+<arg>${REMOTE_URL}</arg>
+<arg>window_name=WinSetup</arg>
+<arg>exact_match=${False}</arg>
+<doc>Runs the given keyword with given arguments and returns the status as a Boolean value.</doc>
+<kw name="Switch Application By Name" library="ApplicationLibrary.DesktopLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>window_name=WinSetup</arg>
+<arg>exact_match=${False}</arg>
+<doc>Switches to a currently opened window by ``window_name``.
+For the capabilities of appium server and Windows,
+Please check http://appium.io/docs/en/drivers/windows</doc>
+<kw name="Save Appium Screenshot" library="ApplicationLibrary.DesktopLibrary">
+<doc>Takes a screenshot with a unique filename to be stored in Robot Framework compiled
+reports.</doc>
+<msg timestamp="20231013 16:25:10.880" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="appium-screenshot-1697235910.7611861-0.png"&gt;&lt;img src="appium-screenshot-1697235910.7611861-0.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" starttime="20231013 16:25:10.761" endtime="20231013 16:25:10.880"/>
+</kw>
+<msg timestamp="20231013 16:25:10.881" level="FAIL">Error finding window "WinSetup" in the desktop session. Is it a top level window handle?. 
+Message: An element could not be located on the page using the given search parameters.
+</msg>
+<status status="FAIL" starttime="20231013 16:24:50.131" endtime="20231013 16:25:10.888"/>
+</kw>
+<msg timestamp="20231013 16:25:10.888" level="INFO">${Result} = False</msg>
+<status status="PASS" starttime="20231013 16:24:50.131" endtime="20231013 16:25:10.889"/>
+</kw>
+<if>
+<branch type="IF" condition="${Result} == True">
+<kw name="Switch Application" library="ApplicationLibrary.DesktopLibrary">
+<arg>Desktop</arg>
+<doc>Switches the active application by index or alias.</doc>
+<status status="NOT RUN" starttime="20231013 16:25:10.889" endtime="20231013 16:25:10.889"/>
+</kw>
+<kw name="Switch Application By Name" library="ApplicationLibrary.DesktopLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>window_name=WinSetup</arg>
+<arg>exact_match=${False}</arg>
+<doc>Switches to a currently opened window by ``window_name``.
+For the capabilities of appium server and Windows,
+Please check http://appium.io/docs/en/drivers/windows</doc>
+<status status="NOT RUN" starttime="20231013 16:25:10.889" endtime="20231013 16:25:10.890"/>
+</kw>
+<status status="NOT RUN" starttime="20231013 16:25:10.889" endtime="20231013 16:25:10.890"/>
+</branch>
+<branch type="ELSE">
+<kw name="Open Application" library="ApplicationLibrary.DesktopLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>platformName=Windows</arg>
+<arg>deviceName=Windows</arg>
+<arg>app=${winSetup}</arg>
+<arg>timeout=10</arg>
+<doc>Opens a new application to given Appium server.
+If your application has a splash screen please supply the window name of the final window that will appear.
+For the capabilities of appium server and Windows please check http://appium.io/docs/en/drivers/windows</doc>
+<kw name="Save Appium Screenshot" library="ApplicationLibrary.DesktopLibrary">
+<doc>Takes a screenshot with a unique filename to be stored in Robot Framework compiled
+reports.</doc>
+<msg timestamp="20231013 16:25:16.200" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="appium-screenshot-1697235916.0597334-1.png"&gt;&lt;img src="appium-screenshot-1697235916.0597334-1.png" width="800px"&gt;&lt;/a&gt;</msg>
+<status status="PASS" starttime="20231013 16:25:16.060" endtime="20231013 16:25:16.201"/>
+</kw>
+<msg timestamp="20231013 16:25:16.201" level="FAIL">Message: Failed to locate opened application window with appId: C:/Rosemount/TankMaster/Setup/StmSetup.exe, and processId: 16220
+</msg>
+<status status="FAIL" starttime="20231013 16:25:10.890" endtime="20231013 16:25:16.204"/>
+</kw>
+<kw name="Switch Application" library="ApplicationLibrary.DesktopLibrary">
+<arg>Desktop</arg>
+<doc>Switches the active application by index or alias.</doc>
+<status status="NOT RUN" starttime="20231013 16:25:16.204" endtime="20231013 16:25:16.204"/>
+</kw>
+<kw name="Switch Application By Name" library="ApplicationLibrary.DesktopLibrary">
+<arg>${REMOTE_URL}</arg>
+<arg>window_name=WinSetup</arg>
+<arg>exact_match=${False}</arg>
+<doc>Switches to a currently opened window by ``window_name``.
+For the capabilities of appium server and Windows,
+Please check http://appium.io/docs/en/drivers/windows</doc>
+<status status="NOT RUN" starttime="20231013 16:25:16.205" endtime="20231013 16:25:16.205"/>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<arg>1</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" starttime="20231013 16:25:16.205" endtime="20231013 16:25:16.205"/>
+</kw>
+<status status="FAIL" starttime="20231013 16:25:10.890" endtime="20231013 16:25:16.205"/>
+</branch>
+<status status="FAIL" starttime="20231013 16:25:10.889" endtime="20231013 16:25:16.205"/>
+</if>
+<status status="FAIL" starttime="20231013 16:24:50.129" endtime="20231013 16:25:16.206"/>
+</kw>
+<kw name="WinSetup Logon" library="WinSetup">
+<status status="NOT RUN" starttime="20231013 16:25:16.206" endtime="20231013 16:25:16.207"/>
+</kw>
+<kw name="ExpandTree" library="WinSetup">
+<status status="NOT RUN" starttime="20231013 16:25:16.207" endtime="20231013 16:25:16.207"/>
+</kw>
+<status status="FAIL" starttime="20231013 16:24:50.128" endtime="20231013 16:25:16.208">Message: Failed to locate opened application window with appId: C:/Rosemount/TankMaster/Setup/StmSetup.exe, and processId: 16220
+</status>
+</test>
+<kw name="Close App" library="Setup" type="TEARDOWN">
+<kw name="Close Application" library="ApplicationLibrary.DesktopLibrary">
+<doc>Closes the current application and also close webdriver session.</doc>
+<status status="PASS" starttime="20231013 16:25:16.211" endtime="20231013 16:25:16.308"/>
+</kw>
+<status status="PASS" starttime="20231013 16:25:16.210" endtime="20231013 16:25:16.308"/>
+</kw>
+<status status="FAIL" starttime="20231013 16:24:48.146" endtime="20231013 16:25:16.308"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="1" skip="0" id="s1" name="WinSetup">WinSetup</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
