@@ -8,7 +8,8 @@ Suite Teardown    Close App
 Setup Communication Protocol
     Start WinSetup
     WinSetup Logon
-    ExpandTree
-    
+    Expand Tree
+    Select Option from Right Click Menu            Protocols    MbMaster.1    Properties
+    Modbus Properties
     
     
