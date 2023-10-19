@@ -61,10 +61,10 @@ Expand Tree
 
 Select Option from Right Click Menu
     [Arguments]     ${item_name1}    ${item_name2}    ${option_name}   
-    #Log     ${item_name}    ${option_name}
+    Comment     "${item_name1}    ${item_name2}    ${option_name}"
     Select Elements From Menu    name=View    name=Toolbar
-    Wait For And Mouse Over And Click Element           name=${item_name1}        #name=Protocols 
-    Select Elements From Context Menu                      name=${item_name2}    name=${option_name}        #name=MbMaster.1    name=Properties 
+    Wait For And Mouse Over And Click Element    name=${item_name1}        #name=Protocols 
+    Select Elements From Context Menu    name=${item_name2}    name=${option_name}        #name=MbMaster.1    name=Properties 
     Sleep    2
     
 
@@ -72,3 +72,16 @@ Modbus Properties
     Wait For And Mouse Over And Click Element    name=Modbus Master Protocol Channel 1 Configuration
     Wait For And Mouse Over And Click Element    name=Apply                        #applies Modbus properties
     Wait For And Mouse Over And Click Element    name=OK
+
+Install New Device
+    Wait For And Mouse Over And Click Element    name=Devices
+    Select Elements From Context Menu    name=Devices    name=Install New...
+    
+Install 2460 System Hub
+    Install New Device
+    Wait For And Mouse Over And Click Element    accessibility_id=28416
+    Select Element From ComboBox    accessibility_id=28416    name=${2460_A.DeviceType}
+    Clear Text    accessibility_id=28417
+    Input Text    accessibility_id=28417    ${2460_A.Tag}
+    Click Button    accessibility_id=28421
+    

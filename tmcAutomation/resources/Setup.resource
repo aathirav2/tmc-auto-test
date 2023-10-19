@@ -2,7 +2,7 @@
 Documentation    Setups for all applications: WinAppDriver, WinSetup, WinOpi
 Library    ApplicationLibrary.DesktopLibrary
 Library    OperatingSystem
-Library    Telnet
+#Library    Telnet
 
 
 
@@ -15,6 +15,7 @@ ${stmAdmin}    C:/Rosemount/TankMaster/Server/StmAdministrator.exe
 ${winSetup}    C:/Rosemount/TankMaster/Setup/StmSetup.exe
 ${username_admin}    administrator
 ${username_supervisor}    supervisor
+&{2460_A}         DeviceType=2460 System Hub    Tag=SYSHUB-201    CommunicationChanel=ModbusMaster.1    ModbusAddress=201    IndividualMBAddress=241    DeviceID=2100000712    SWVer=1.M0    IP_eth1=192.168.1.201    WebAdminUser=Administrator    WebAdminPass=admin    # 2460_A Device properties
 
 &{Keys}           NULL=\ue000    CANCEL=\ue001    HELP=\ue002    BACKSPACE=\ue003    BACK_SPACE=\ue003    TAB=\ue004    CLEAR=\ue005    RETURN=\ue006    ENTER=\ue007    SHIFT=\ue008    LEFT_SHIFT=\ue008    CONTROL=\ue009    LEFT_CONTROL=\ue009    ALT=\ue00a    LEFT_ALT=\ue00a    PAUSE=\ue00b    ESCAPE=\ue00c
 ...               SPACE=\ue00d    PAGE_UP=\ue00e    PAGE_DOWN=\ue00f    END=\ue010    HOME=\ue011    LEFT=\ue012    ARROW_LEFT=\ue012    UP=\ue013    ARROW_UP=\ue013    RIGHT=\ue014    ARROW_RIGHT=\ue014    DOWN=\ue015    ARROW_DOWN=\ue015    INSERT=\ue016    DELETE=\ue017    SEMICOLON=\ue018    EQUALS=\ue019
