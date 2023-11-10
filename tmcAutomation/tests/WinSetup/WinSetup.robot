@@ -17,3 +17,12 @@ WinSetup - Device installation (wired) - 2460
     WinSetup Logon
     Expand Tree    
     Install 2460 System Hub
+
+WinSetup - Device installation (wired) - 2410_A
+    Start WinSetup
+    WinSetup Logon
+    Expand Tree
+    Install 2410 Tank Hub
+
+#WinSetup - Field Device Installation/configuration
+
