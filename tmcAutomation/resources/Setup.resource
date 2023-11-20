@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Setups for all applications: WinAppDriver, WinSetup, WinOpi
+Documentation    Common functions across all applications: WinAppDriver, WinSetup, WinOpi and System administrator
 Library    ApplicationLibrary.DesktopLibrary
 Library    OperatingSystem
 
