@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Common functions across WinSetup application
+Documentation    Common functions across WinSetup application.
 Resource    ../resources/Setup.resource
 Library     ApplicationLibrary.DesktopLibrary
 Library    OperatingSystem
