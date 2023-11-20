@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation    WinSetup Device installation wired       
 Resource    ../../resources/Setup.resource
+Resource    ../../resources/config.resource
 Resource    ../../resources/WinSetup.resource
 Suite Setup    Start App    
 Suite Teardown    Close App
@@ -16,3 +17,4 @@ WinSetup Device installation
     Check communication to installed Devices    LT-TK-1    accessibility_id=28431
     Check communication to installed Devices    ATD-TK-1   accessibility_id=28432
 
+ 

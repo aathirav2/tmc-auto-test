@@ -1,14 +1,14 @@
 *** Settings ***
 Documentation    Common functions across WinSetup application.
 Resource    ../resources/Setup.resource
+Resource    ../resources/config.resource
 Library     ApplicationLibrary.DesktopLibrary
 Library    OperatingSystem
 Library    Collections
 
 *** Variables ***
 ${expandTree}    xpath=//TreeItem[@Name=\"Network Connections\"]
-${username_admin}    administrator
-${i}     1
+
 
 
 *** Keywords ***
@@ -23,7 +23,6 @@ Start WinSetup
         Open Application    ${REMOTE_URL}     platformName=Windows    deviceName=Windows    app=${winSetup}    timeout=10
         Switch Application    Desktop
         Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
-        Sleep    1
     END
     
 Login to WinSetup
@@ -33,14 +32,14 @@ Login to WinSetup
         Clear Text    accessibility_id=28416                                                                 #clear text if any from username field
         Input Text    accessibility_id=28416    ${username_admin}                                            #user name
         Clear Text    accessibility_id=28418                                                                 #clear text if any from password field
-        Input Password    accessibility_id=28418    admin                                                    #password
+        Input Password    accessibility_id=28418    ${password_admin}                                        #password
         Click Element    name=OK
 
     ELSE
         Wait For And Click Element    name=Log on
         Wait For And Mouse Over And Click Element    name=Logon to TankMaster
         Input Text    accessibility_id=28416    ${username_admin}                                            #user name
-        Input Password    accessibility_id=28418    admin                                                    #password
+        Input Password    accessibility_id=28418    ${password_admin}                                        #password
         Click Element    name=OK
     
     END
@@ -58,7 +57,7 @@ Expand Tree structure
     ELSE
         Switch Application    Desktop
         Switch Application By Name    ${REMOTE_URL}    window_name=Rosemount TankMaster WinSetup
-        Sleep    2
+        Wait Until Page Contains Element     name=Rosemount TankMaster WinSetup     timeout=20
         Wait For And Mouse Over And Click Element    name=Rosemount TankMaster WinSetup
         Select Elements From Context Menu    ${expandTree}    name=Collapse All
         Select Elements From Context Menu    ${expandTree}    name=Expand All
@@ -70,7 +69,7 @@ Setup Protocol
     Select Elements From Menu    name=View    name=Toolbar
     Wait For And Mouse Over And Click Element    name=${item_name1}                                            #name=Protocols 
     Select Elements From Context Menu    name=${item_name2}    name=${option_name}                             #name=MbMaster.1    name=Properties 
-    Sleep    2
+    Wait Until Page Contains Element     name=Modbus Master Protocol Channel 1 Configuration     timeout=20
     Wait For And Mouse Over And Click Element    name=Modbus Master Protocol Channel 1 Configuration
     Wait For And Mouse Over And Click Element    name=Apply                                                    #applies Modbus properties
     Wait For And Mouse Over And Click Element    name=OK
@@ -122,7 +121,7 @@ Install 2410 Tank Hub
     Install New Device
     Wait For And Mouse Over Element    accessibility_id=28416     timeout=10
     Select Element From ComboBox    accessibility_id=28416    name=${2410_A.DeviceType}    index=2
-    Sleep    5
+    Wait Until Page Contains Element     accessibility_id=28417     timeout=20
     Clear Text    accessibility_id=28417
     Input Text    accessibility_id=28417    ${2410_A.Tag}
     Wait For And Mouse Over And Click Element    name=Next >                                       #accessibility_id=28421
@@ -135,7 +134,7 @@ Install 2410 Tank Hub
     Send Keys    ${2410_A.DeviceID}                                                                 #Automation ID 28423 - Device ID is duplicated with change address Button
     Send Keys    ${Keys.TAB}                                                                        #Automation ID 28416 - Modbus Address is duplicated with communication channel
     Send Keys    ${2410_A.ModbusAddress}
-    Sleep    4s
+    Wait Until Page Contains Element     name=OK     timeout=20
     Wait For And Mouse Over And Click Element    name=OK
     Wait For And Mouse Over And Click Element    name=Verify Communication    timeout=10
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster
@@ -151,19 +150,19 @@ Install 2410 Tank Hub
     Wait For And Mouse Over And Click Element    name=Next >
     # 2410 Tank Data base window
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Tank Database - ${2410_A.Tag}    timeout=15
-    Sleep    1
+    Wait Until Page Contains Element     name=Next >     timeout=20
     Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
     # 2410 Tank Hub Device Tags
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Device Tags - ${2410_A.Tag}    timeout=15
-    Sleep    1
+    Wait Until Page Contains Element     name=Next >     timeout=20
     Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
     # 2410 Tank Hub Local Display
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Local Display - ${2410_A.Tag}    timeout=15
-    Sleep    1
+    Wait Until Page Contains Element     name=Next >     timeout=20
     Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
     # 2410 Tank Hub Summary
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Summary - ${2410_A.Tag}    timeout=15
-    Sleep    1
+    Wait Until Page Contains Element     name=Finish     timeout=20
     Wait For And Mouse Over And Click Element    name=Finish    # nothing to check / change at this stage
     # check instruction message
     Wait Until Page Contains Element     name=Rosemount TankMaster     timeout=20
@@ -180,7 +179,7 @@ Install 2410 Tank Hub
     ${Result}=    Get Element Attribute    accessibility_id=65535    Name              #attributes names according to inspector.exe
     Log    ${Result}
     Should Contain    ${Result}        Configuration of value units has been changed and this requires an update of 2460 in TankServer database.  
-    Sleep    1
+    Wait Until Page Contains Element     name=OK     timeout=20
     Wait For And Mouse Over And Click Element    name=OK 
     # check success message
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
@@ -197,12 +196,13 @@ Check communication to installed Devices
     Comment     "${device_name1}    ${device_message}"
     Wait For And Mouse Over And Click Element    name=${device_name1}              timeout=15                             
     Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                              #Properties   
-    Sleep    10
+    Wait Until Page Contains Element     accessibility_id=12321     timeout=20
     Wait For And Mouse Over And Click Element    accessibility_id=12321    timeout=30                                #Apply button
-    Sleep    10
-    Wait For And Mouse Over And Click Element    ${device_message}    timeout=20
+    Wait Until Page Contains Element     ${device_message}     timeout=30
+    #Wait For And Mouse Over And Click Element    ${device_message}    timeout=20
     ${Result}=    Get Element Attribute    ${device_message}   Value.Value
-    Log    ${Result}
+    Log To Console  ${Result}
     Should Contain    ${Result}        Device is configured.
-    Sleep    10  
+    Wait Until Page Contains Element     name=OK    timeout=20  
     Wait For And Click Element    name=OK                    timeout=30
+   
