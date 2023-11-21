@@ -9,7 +9,7 @@ ${Notepad}       C:/Windows/System32/notepad.exe
 ${stmAdmin}      C:/Rosemount/TankMaster/Server/StmAdministrator.exe
 ${winSetup}      C:/Rosemount/TankMaster/Setup/StmSetup.exe
 ${username_admin}    administrator
-${password_admin}    admin
+${password_admin}    <ADMIN_PASSWORD>
 ${username_supervisor}    supervisor
 ${password_supervisor}    super
 &{2460_A}         DeviceType=2460 System Hub    Tag=SYSHUB-211    CommunicationChanel=ModbusMaster.1    ModbusAddress=201    IndividualMBAddress=241    DeviceID=1800000651    SWVer=1.M0    IP_eth1=10.70.49.119    WebAdminUser=Administrator    WebAdminPass=admin    # 2460_A Device properties
