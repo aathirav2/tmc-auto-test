@@ -194,15 +194,14 @@ Install 2410 Tank Hub
 Check communication to installed Devices
     [Arguments]     ${device_name1}    ${device_message} 
     Comment     "${device_name1}    ${device_message}"
-    Wait For And Mouse Over And Click Element    name=${device_name1}              timeout=15                             
-    Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                              #Properties   
-    Wait Until Page Contains Element     accessibility_id=12321     timeout=20
-    Wait For And Mouse Over And Click Element    accessibility_id=12321    timeout=30                                #Apply button
-    Wait Until Page Contains Element     ${device_message}     timeout=30
-    #Wait For And Mouse Over And Click Element    ${device_message}    timeout=20
+    Wait For And Mouse Over And Click Element    name=${device_name1}              timeout=30                             
+    Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                              #Properties 
+    Wait For And Mouse Over Element    accessibility_id=12321     timeout=40
+    Wait Until Page Contains Element     accessibility_id=12321     timeout=40
+    Wait For And Mouse Over And Click Element    accessibility_id=12321    timeout=40  
+    Wait For And Mouse Over And Click Element    ${device_message}    timeout=30
     ${Result}=    Get Element Attribute    ${device_message}   Value.Value
     Log To Console  ${Result}
-    Should Contain    ${Result}        Device is configured.
-    Wait Until Page Contains Element     name=OK    timeout=20  
+    Should Contain    ${Result}        Device is configured.  
     Wait For And Click Element    name=OK                    timeout=30
    
