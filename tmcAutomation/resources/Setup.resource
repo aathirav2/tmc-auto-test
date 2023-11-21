@@ -12,11 +12,10 @@ Start App
     #Driver Setup    
     Open Application    ${REMOTE_URL}    platformName=Windows    deviceName=Windows    app=${Notepad}    alias=Main
     Maximize Window
-    Quit Application
 
 
 Close App
-    Close Application
+    Quit Application
     
     
     
