@@ -9,7 +9,9 @@ TODO: Guide users through getting your code up and running on their own system. 
 4.	API references
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+TODO: Describe and show how to build your code and run the tests.
+
+Update the ${password_admin} and ${password_supervisor} in config_credentials.resource file
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 

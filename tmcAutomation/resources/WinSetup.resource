@@ -2,6 +2,7 @@
 Documentation    Common functions across WinSetup application.
 Resource    ../resources/Setup.resource
 Resource    ../resources/config.resource
+Resource    ../resources/config_credentials.resource
 Library     ApplicationLibrary.DesktopLibrary
 Library    OperatingSystem
 Library    Collections
