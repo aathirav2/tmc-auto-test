@@ -1,6 +1,7 @@
 *** Settings ***
-Resource    ../resources/Setup.resource
 Library     ApplicationLibrary.DesktopLibrary
+Library    OperatingSystem
+Resource    ../resources/config.resource
 
 
 *** Keywords ***
