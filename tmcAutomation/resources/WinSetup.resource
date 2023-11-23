@@ -1,6 +1,5 @@
 *** Settings ***
 Documentation    Common functions across WinSetup application.
-Resource    ../resources/Setup.resource
 Resource    ../resources/config.resource
 Resource    ../resources/config_credentials.resource
 Library     ApplicationLibrary.DesktopLibrary
@@ -14,17 +13,9 @@ ${expandTree}    xpath=//TreeItem[@Name=\"Network Connections\"]
 
 *** Keywords ***
 Start WinSetup
+    Open Application    ${REMOTE_URL}     platformName=Windows    deviceName=Windows    app=${winSetup}  
     Switch Application    Desktop
-    ${Result}=    Run Keyword And Return Status    Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
-    IF    ${Result} == True    # Opens if window doesnt exists
-        Switch Application    Desktop
-        Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup     exact_match=${False}
-        
-    ELSE
-        Open Application    ${REMOTE_URL}     platformName=Windows    deviceName=Windows    app=${winSetup}    timeout=10
-        Switch Application    Desktop
-        Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
-    END
+    Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
     
 Login to WinSetup
     ${Logon}=    Run Keyword And Return Status    Page Should Contain Element    name=Logon to TankMaster    #check if logon window is open
@@ -42,12 +33,11 @@ Login to WinSetup
         Input Text    accessibility_id=28416    ${username_admin}                                            #user name
         Input Password    accessibility_id=28418    ${password_admin}                                        #password
         Click Element    name=OK
-    
     END
     
     Maximize Window
     Wait For And Mouse Over And Click Element    accessibility_id=59393                                       # automation id of status bar 59393
-    Wait For And Mouse Over And Click Element    name=${username_admin}                                       # if it can find the user lever then it was succesfull login
+    Wait For And Mouse Over And Click Element    name=${username_admin}                                       # if it can find the user lever then it was successful login
 
 Expand Tree structure
     Comment    Send Keys    ${Keys.UP}                                                                         # a dummy move so that the pointer go to the tree instead of the status
@@ -65,15 +55,18 @@ Expand Tree structure
     END
 
 Setup Protocol
-    [Arguments]     ${item_name1}    ${item_name2}    ${option_name}   
-    Comment     "${item_name1}    ${item_name2}    ${option_name}"
-    Select Elements From Menu    name=View    name=Toolbar
-    Wait For And Mouse Over And Click Element    name=${item_name1}                                            #name=Protocols 
-    Select Elements From Context Menu    name=${item_name2}    name=${option_name}                             #name=MbMaster.1    name=Properties 
+    #Select Elements From Menu    name=View    name=Toolbar
+    Wait For And Mouse Over Element    name=Protocols
+    Mouse Over And Context Click Element  name=ModbusMaster 1.0                                               
+    Wait For And Mouse Over And Click Element    name=Properties 
+    Wait Until Page Contains Element     name=ModbusMaster Protocol Properties     timeout=20
+    Wait For And Mouse Over And Click Element    name=1    #MbMaster.1
+    Wait For And Mouse Over And Click Element    name=Properties...
     Wait Until Page Contains Element     name=Modbus Master Protocol Channel 1 Configuration     timeout=20
-    Wait For And Mouse Over And Click Element    name=Modbus Master Protocol Channel 1 Configuration
-    Wait For And Mouse Over And Click Element    name=Apply                                                    #applies Modbus properties
-    Wait For And Mouse Over And Click Element    name=OK
+    Wait For And Mouse Over And Click Element    name=Enable Channel
+    Wait For And Mouse Over And Click Element    name=Apply    timeout=30                                             
+    Wait For And Mouse Over And Click Element    name=OK       timeout=30
+    Wait For And Mouse Over And Click Element    accessibility_id=28418    timeout=30
 
 Install New Device
     Select Elements From Context Menu    name=Devices    name=Install New...
@@ -205,4 +198,5 @@ Check communication to installed Devices
     Log To Console  ${Result}
     Should Contain    ${Result}        Device is configured.  
     Wait For And Click Element    name=OK                    timeout=30
+    
    
