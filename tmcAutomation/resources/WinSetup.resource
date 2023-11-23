@@ -18,33 +18,37 @@ Start WinSetup
     Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
     
 Login to WinSetup
-    ${Logon}=    Run Keyword And Return Status    Page Should Contain Element    name=Logon to TankMaster    #check if logon window is open
-    IF    ${Logon}                                                                                           #logon window is open, login as admin, else open Logon window and login
+    #check if logon window is open: if open, login as admin else open Logon window and login
+    ${Logon}=    Run Keyword And Return Status    Page Should Contain Element    name=Logon to TankMaster    
+    IF    ${Logon}                                                                                         
         Wait For And Mouse Over And Click Element    name=Logon to TankMaster
-        Clear Text    accessibility_id=28416                                                                 #clear text if any from username field
-        Input Text    accessibility_id=28416    ${username_admin}                                            #user name
-        Clear Text    accessibility_id=28418                                                                 #clear text if any from password field
-        Input Password    accessibility_id=28418    ${password_admin}                                        #password
+        Clear Text    accessibility_id=28416                                                                 
+        Input Text    accessibility_id=28416    ${username_admin}                                            
+        Clear Text    accessibility_id=28418                                                                 
+        Input Password    accessibility_id=28418    ${password_admin}                                        
         Click Element    name=OK
 
     ELSE
         Wait For And Click Element    name=Log on
         Wait For And Mouse Over And Click Element    name=Logon to TankMaster
-        Input Text    accessibility_id=28416    ${username_admin}                                            #user name
-        Input Password    accessibility_id=28418    ${password_admin}                                        #password
+        Input Text    accessibility_id=28416    ${username_admin}                                            
+        Input Password    accessibility_id=28418    ${password_admin}                                        
         Click Element    name=OK
     END
     
     Maximize Window
-    Wait For And Mouse Over And Click Element    accessibility_id=59393                                       # automation id of status bar 59393
-    Wait For And Mouse Over And Click Element    name=${username_admin}                                       # if it can find the user lever then it was successful login
+    # automation id of status bar 59393
+    Wait For And Mouse Over And Click Element    accessibility_id=59393  
+    # if it can find the user lever then it was successful login                                     
+    Wait For And Mouse Over And Click Element    name=${username_admin}                                       
 
 Expand Tree structure
-    Comment    Send Keys    ${Keys.UP}                                                                         # a dummy move so that the pointer go to the tree instead of the status
+    # a dummy move so that the pointer go to the tree instead of the status
+    Comment    Send Keys    ${Keys.UP}                                                                         
     ${Result}=    Run Keyword And Return Status    Select Elements From Context Menu    ${expandTree}    name=Expand All
     IF    ${Result} == True
         Log    Already expanded
-        Send Keys    ${Keys.ESCAPE}    #ESC
+        Send Keys    ${Keys.ESCAPE} 
     ELSE
         Switch Application    Desktop
         Switch Application By Name    ${REMOTE_URL}    window_name=Rosemount TankMaster WinSetup
@@ -55,7 +59,6 @@ Expand Tree structure
     END
 
 Setup Protocol
-    #Select Elements From Menu    name=View    name=Toolbar
     Wait For And Mouse Over Element    name=Protocols
     Mouse Over And Context Click Element  name=ModbusMaster 1.0                                               
     Wait For And Mouse Over And Click Element    name=Properties 
@@ -77,32 +80,36 @@ Install 2460 System Hub
     Select Element From ComboBox    accessibility_id=28416    name=${2460_A.DeviceType}    index=0
     Clear Text    accessibility_id=28417
     Input Text    accessibility_id=28417    ${2460_A.Tag}
-    Wait For And Mouse Over And Click Element    name=Next >                              #accessibility_id=28421
+    Wait For And Mouse Over And Click Element    name=Next >                           
     Switch Application    Desktop
     Wait For And Mouse Over And Click Element    name=2460 System Hub Communication - ${2460_A.Tag}    timeout=15
+    #name=Modbus Address
     Wait For And Mouse Over And Click Element    accessibility_id=28421
-    Clear Text    accessibility_id=28421            #name=Modbus Address:
+    Clear Text    accessibility_id=28421            
     Input Text    accessibility_id=28421    ${2460_A.ModbusAddress}
-    Wait For And Mouse Over And Click Element    name=Change Address...                   #button
-    Wait For And Mouse Over And Click Element    name=Change Address                      #Dialog
-    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                          # ALT+d to enter device ID
+    #Change address button
+    Wait For And Mouse Over And Click Element    name=Change Address...
+    #Change address Dialog   
+    Wait For And Mouse Over And Click Element    name=Change Address   
+    # ALT+d to enter device ID                   
+    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                          
     Send Keys    ${2460_A.DeviceID} 
     Wait For And Mouse Over And Click Element    name=OK  
-    Wait For And Mouse Over And Click Element    name=Verify Communication                #accessibility_id=28426
-    Wait For And Mouse Over And Click Element    accessibility_id=65535                   #name=Communication with 2460 System Hub is OK. 2460 System Hub version is 1.K1
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                 #attributes names according to inspector.exe
+    Wait For And Mouse Over And Click Element    name=Verify Communication                
+    Wait For And Mouse Over And Click Element    accessibility_id=65535                   
+    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                 
     Should Contain    ${Result}    Communication with ${2460_A.DeviceType} is OK
-    Wait For And Mouse Over And Click Element    name=OK                                  #accessibility_id=2
+    Wait For And Mouse Over And Click Element    name=OK                                  
     Log    ${Result}
     Wait For And Mouse Over And Click Element    name=Next >    
     # Device port Configuration window
-    Wait For And Mouse Over And Click Element    name=Next >                               # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >                               
     # Tank Data base window
-    Wait For And Mouse Over And Click Element    name=Next >                               # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >                               
     # Redundancewindow
-    Wait For And Mouse Over And Click Element    name=Next >                               # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >                               
     # Summary window
-    Wait For And Mouse Over And Click Element    name=Finish                               # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Finish                               
     # Succesfull installation message
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=4
     Wait For And Mouse Over And Click Element    accessibility_id=65535    
@@ -118,67 +125,67 @@ Install 2410 Tank Hub
     Wait Until Page Contains Element     accessibility_id=28417     timeout=20
     Clear Text    accessibility_id=28417
     Input Text    accessibility_id=28417    ${2410_A.Tag}
-    Wait For And Mouse Over And Click Element    name=Next >                                       #accessibility_id=28421
+    Wait For And Mouse Over And Click Element    name=Next >                                       
     Switch Application    Desktop
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Communication - ${2410_A.Tag}    timeout=15        #accessibility_id=59648    
+    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Communication - ${2410_A.Tag}    timeout=15        
     Click Button    name=Via 2460
-    Wait For And Mouse Over And Click Element    name=Change Address on Device...                   #button
-    Wait For And Mouse Over And Click Element    name=Change Address         timeout=15             #Dialog
-    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                                    #ALT+d to enter device ID
-    Send Keys    ${2410_A.DeviceID}                                                                 #Automation ID 28423 - Device ID is duplicated with change address Button
-    Send Keys    ${Keys.TAB}                                                                        #Automation ID 28416 - Modbus Address is duplicated with communication channel
+    Wait For And Mouse Over And Click Element    name=Change Address on Device...                   
+    Wait For And Mouse Over And Click Element    name=Change Address         timeout=15             
+    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                                    
+    Send Keys    ${2410_A.DeviceID}                                                                 
+    Send Keys    ${Keys.TAB}                                                                        
     Send Keys    ${2410_A.ModbusAddress}
     Wait Until Page Contains Element     name=OK     timeout=20
     Wait For And Mouse Over And Click Element    name=OK
     Wait For And Mouse Over And Click Element    name=Verify Communication    timeout=10
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster
-    Wait For And Mouse Over And Click Element    accessibility_id=65535                             #name=Communication with 2410 is OK, 2410 version: 1.G8
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                           #attributes names according to inspector.exe
+    Wait For And Mouse Over And Click Element    accessibility_id=65535                             
+    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                           
     Log    ${Result}
     Should Contain    ${Result}    Communication with 2410 is OK, 2410 version: ${2410_A.SWVer}
     Wait For And Mouse Over And Click Element    name=OK
     Wait For And Mouse Over And Click Element    accessibility_id=28423
-    ${Result}=    Get Element Attribute    accessibility_id=28423    Value.Value                    #attributes names according to inspector.exe
+    ${Result}=    Get Element Attribute    accessibility_id=28423    Value.Value                    
     Should Be Equal    ${Result}    ${2410_A.DeviceID}
     Log    ${Result}
     Wait For And Mouse Over And Click Element    name=Next >
     # 2410 Tank Data base window
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Tank Database - ${2410_A.Tag}    timeout=15
     Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >    
     # 2410 Tank Hub Device Tags
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Device Tags - ${2410_A.Tag}    timeout=15
     Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >    
     # 2410 Tank Hub Local Display
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Local Display - ${2410_A.Tag}    timeout=15
     Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Next >    
     # 2410 Tank Hub Summary
     Wait For And Mouse Over And Click Element    name=2410 Tank Hub Summary - ${2410_A.Tag}    timeout=15
     Wait Until Page Contains Element     name=Finish     timeout=20
-    Wait For And Mouse Over And Click Element    name=Finish    # nothing to check / change at this stage
+    Wait For And Mouse Over And Click Element    name=Finish    
     # check instruction message
     Wait Until Page Contains Element     name=Rosemount TankMaster     timeout=20
     # information message validation
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
     Wait For And Mouse Over And Click Element    accessibility_id=65535    
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              #attributes names according to inspector.exe
+    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              
     Log    ${Result}
     Should Contain    ${Result}    The device(s) will be automatically installed in TankMaster database.
     Wait For And Mouse Over And Click Element    name=OK  
     #configuration information validation    
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
     Wait For And Mouse Over And Click Element    accessibility_id=65535    
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              #attributes names according to inspector.exe
+    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              
     Log    ${Result}
     Should Contain    ${Result}        Configuration of value units has been changed and this requires an update of 2460 in TankServer database.  
     Wait Until Page Contains Element     name=OK     timeout=20
     Wait For And Mouse Over And Click Element    name=OK 
     # check success message
     Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
-    Wait For And Mouse Over And Click Element    accessibility_id=65535      #name=Communication with 2460 System Hub is OK.
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name    #attributes names according to inspector.exe
+    Wait For And Mouse Over And Click Element    accessibility_id=65535      
+    ${Result}=    Get Element Attribute    accessibility_id=65535    Name    
     Log   ${Result}
     Should Be Equal    ${Result}    The 2410 ${2410_A.Tag} was successfully installed.
     Wait For And Mouse Over And Click Element    name=OK
@@ -189,7 +196,7 @@ Check communication to installed Devices
     [Arguments]     ${device_name1}    ${device_message} 
     Comment     "${device_name1}    ${device_message}"
     Wait For And Mouse Over And Click Element    name=${device_name1}              timeout=30                             
-    Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                              #Properties 
+    Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                   
     Wait For And Mouse Over Element    accessibility_id=12321     timeout=40
     Wait Until Page Contains Element     accessibility_id=12321     timeout=40
     Wait For And Mouse Over And Click Element    accessibility_id=12321    timeout=40  
