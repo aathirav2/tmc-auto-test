@@ -1,6 +1,7 @@
 *** Settings ***
-Resource    ../resources/Setup.resource
 Library     ApplicationLibrary.DesktopLibrary
+Library    OperatingSystem
+Resource    ../resources/config.resource
 
 
 *** Keywords ***
@@ -8,7 +9,7 @@ Open Administrator Program
 
     Switch Application    Desktop
     ${Result}=    Run Keyword And Return Status    Switch Application By Name    ${REMOTE_URL}    window_name=Rosemount TankMaster / Administrator Program    exact_match=${False}
-    IF    ${Result} == True    # check if window exist, other wise open it
+    IF    ${Result} == True    # check if window exist, otherwise open it
         Switch Application    Desktop
         Switch Application By Name    ${REMOTE_URL}    window_name=Rosemount TankMaster / Administrator Program     exact_match=${False}
         Comment    ApplicationLibrary.DesktopLibrary.Wait For And Mouse Over And Click Element    xpath=//ToolBar[@ClassName=\"MSTaskListWClass\"][@Name=\"Running applications\"]/Button[@Name=\"TankMaster/Administrator - 1 running window\"][@AutomationId=\"C:\\Rosemount\\TankMaster\\Server\\StmAdministrator.exe\"]
@@ -25,6 +26,6 @@ Open Administrator Program
         Wait Until Element Is Visible    name=Log off
         Wait Until Element Is Enabled    name=Log off
         Wait For And Mouse Over And Click Element    name=Processes...
-        Send Keys    ${Keys.ESCAPE}   #ESC
+        Send Keys    ${Keys.ESCAPE}  
     END
     Sleep    2
