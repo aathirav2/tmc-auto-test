@@ -2,208 +2,238 @@
 Documentation    Common functions across WinSetup application.
 Resource    ../resources/config.resource
 Resource    ../resources/config_credentials.resource
-Library     ApplicationLibrary.DesktopLibrary
-Library    OperatingSystem
-Library    Collections
+Library    FlaUILibrary
 
 *** Variables ***
-${expandTree}    xpath=//TreeItem[@Name=\"Network Connections\"]
-
-
-
+${Result}
 *** Keywords ***
 Start WinSetup
-    Open Application    ${REMOTE_URL}     platformName=Windows    deviceName=Windows    app=${winSetup}  
-    Switch Application    Desktop
-    Switch Application By Name    ${REMOTE_URL}    window_name=WinSetup    exact_match=${False}
-    
-Login to WinSetup
-    #check if logon window is open: if open, login as admin else open Logon window and login
-    ${Logon}=    Run Keyword And Return Status    Page Should Contain Element    name=Logon to TankMaster    
-    IF    ${Logon}                                                                                         
-        Wait For And Mouse Over And Click Element    name=Logon to TankMaster
-        Clear Text    accessibility_id=28416                                                                 
-        Input Text    accessibility_id=28416    ${username_admin}                                            
-        Clear Text    accessibility_id=28418                                                                 
-        Input Password    accessibility_id=28418    ${password_admin}                                        
-        Click Element    name=OK
+    FlaUILibrary.Launch Application    ${winSetup} 
+    #Loading time for application
+    Sleep    10
+    Wait Until Element Exist    /Window/Window[@Name="Logon to TankMaster"]
 
+Login to WinSetup
+    ${Logon}=    Run Keyword And Return Status    Element Should Exist    /Window/Window[@Name="Logon to TankMaster"]
+    IF    ${Logon}
+        Set Text To Textbox    /Window/Window/Pane/Edit[1]    ${username_admin}
+        Set Text To Textbox    /Window/Window/Pane/Edit[2]    ${password_admin} 
+        Click    /Window/Window/Pane/Button[@Name="OK"] 
     ELSE
-        Wait For And Click Element    name=Log on
-        Wait For And Mouse Over And Click Element    name=Logon to TankMaster
-        Input Text    accessibility_id=28416    ${username_admin}                                            
-        Input Password    accessibility_id=28418    ${password_admin}                                        
-        Click Element    name=OK
+        Click    /Window/ToolBar/Button[@Name="Log on"]
+        Set Text To Textbox    /Window/Window/Pane/Edit[1]    ${username_admin}
+        Set Text To Textbox    /Window/Window/Pane/Edit[2]    ${password_admin} 
+        Click    /Window/Window/Pane/Button[@Name="OK"] 
     END
-    
-    Maximize Window
-    # automation id of status bar 59393
-    Wait For And Mouse Over And Click Element    accessibility_id=59393  
-    # if it can find the user lever then it was successful login                                     
-    Wait For And Mouse Over And Click Element    name=${username_admin}                                       
+    ${Result} =    Run Keyword And Return Status    Name Contains Text    Maximize    /Window/TitleBar/Button[2]  
+    IF    ${Result} == True
+        Click    /Window/TitleBar/Button[@Name="Maximize"]
+    ELSE
+        Log   Window is already maximised
+    END
 
 Expand Tree structure
-    # a dummy move so that the pointer go to the tree instead of the status
-    Comment    Send Keys    ${Keys.UP}                                                                         
-    ${Result}=    Run Keyword And Return Status    Select Elements From Context Menu    ${expandTree}    name=Expand All
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem[@Name="Network Connections"]
+    ${Result}=    Run Keyword And Return Status   Name Contains Text    Expand All    /Menu/MenuItem[@Name="Expand All"]
     IF    ${Result} == True
-        Log    Already expanded
-        Send Keys    ${Keys.ESCAPE} 
+        Click    /Menu/MenuItem[@Name="Expand All"]
     ELSE
-        Switch Application    Desktop
-        Switch Application By Name    ${REMOTE_URL}    window_name=Rosemount TankMaster WinSetup
-        Wait Until Page Contains Element     name=Rosemount TankMaster WinSetup     timeout=20
-        Wait For And Mouse Over And Click Element    name=Rosemount TankMaster WinSetup
-        Select Elements From Context Menu    ${expandTree}    name=Collapse All
-        Select Elements From Context Menu    ${expandTree}    name=Expand All
+        Click    /Menu/MenuItem[@Name="Collapse All"]
+        Right Click    /Window/Pane[2]/Pane/Tree/TreeItem[@Name="Network Connections"]
+        Click    /Menu/MenuItem[@Name="Expand All"]
     END
 
 Setup Protocol
-    Wait For And Mouse Over Element    name=Protocols
-    Mouse Over And Context Click Element  name=ModbusMaster 1.0                                               
-    Wait For And Mouse Over And Click Element    name=Properties 
-    Wait Until Page Contains Element     name=ModbusMaster Protocol Properties     timeout=20
-    Wait For And Mouse Over And Click Element    name=1    #MbMaster.1
-    Wait For And Mouse Over And Click Element    name=Properties...
-    Wait Until Page Contains Element     name=Modbus Master Protocol Channel 1 Configuration     timeout=20
-    Wait For And Mouse Over And Click Element    name=Enable Channel
-    Wait For And Mouse Over And Click Element    name=Apply    timeout=30                                             
-    Wait For And Mouse Over And Click Element    name=OK       timeout=30
-    Wait For And Mouse Over And Click Element    accessibility_id=28418    timeout=30
+    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[3]/TreeItem[@Name="ModbusMaster 1.0"]
+    Click    /Window/ToolBar/Button[@Name="Properties"]
+    #MbMaster.1
+    Click    /Window/Window/Pane/List/ListItem[1]
+    Click    /Window/Window/Pane/Button[@Name="Properties..."]
+    Set Checkbox State    /Window/Window/Window/Pane/CheckBox[@Name="Enable Channel"]    ${True}
+    Click    /Window/Window/Window/Button[@Name="Apply"]
+    Click Hold  /Window/Window/Window/Button[@Name="OK"]    1000
+    Click Hold   /Window/Window/Pane/Button[@Name="Close"]    5000
 
 Install New Device
-    Select Elements From Context Menu    name=Devices    name=Install New...
-    
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[@Name="Devices"]
+    Click    /Menu/MenuItem[@Name="Install New..."]
+
 Install 2460 System Hub
     Install New Device
-    Wait For And Mouse Over Element    accessibility_id=28416
-    Select Element From ComboBox    accessibility_id=28416    name=${2460_A.DeviceType}    index=0
-    Clear Text    accessibility_id=28417
-    Input Text    accessibility_id=28417    ${2460_A.Tag}
-    Wait For And Mouse Over And Click Element    name=Next >                           
-    Switch Application    Desktop
-    Wait For And Mouse Over And Click Element    name=2460 System Hub Communication - ${2460_A.Tag}    timeout=15
-    #name=Modbus Address
-    Wait For And Mouse Over And Click Element    accessibility_id=28421
-    Clear Text    accessibility_id=28421            
-    Input Text    accessibility_id=28421    ${2460_A.ModbusAddress}
-    #Change address button
-    Wait For And Mouse Over And Click Element    name=Change Address...
-    #Change address Dialog   
-    Wait For And Mouse Over And Click Element    name=Change Address   
-    # ALT+d to enter device ID                   
-    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                          
-    Send Keys    ${2460_A.DeviceID} 
-    Wait For And Mouse Over And Click Element    name=OK  
-    Wait For And Mouse Over And Click Element    name=Verify Communication                
-    Wait For And Mouse Over And Click Element    accessibility_id=65535                   
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                 
-    Should Contain    ${Result}    Communication with ${2460_A.DeviceType} is OK
-    Wait For And Mouse Over And Click Element    name=OK                                  
-    Log    ${Result}
-    Wait For And Mouse Over And Click Element    name=Next >    
-    # Device port Configuration window
-    Wait For And Mouse Over And Click Element    name=Next >                               
-    # Tank Data base window
-    Wait For And Mouse Over And Click Element    name=Next >                               
-    # Redundancewindow
-    Wait For And Mouse Over And Click Element    name=Next >                               
-    # Summary window
-    Wait For And Mouse Over And Click Element    name=Finish                               
-    # Succesfull installation message
-    Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=4
-    Wait For And Mouse Over And Click Element    accessibility_id=65535    
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                  
+    Press Key    s'HOME'   /Window/Window/Pane/ComboBox
+    Expand Combobox    /Window/Window/Pane/ComboBox
+    Click   /Window/Window/Pane/ComboBox/List/ListItem[1][@Name='2460 System Hub']  
+    Set Text To Textbox    /Window/Window/Pane/Edit    ${2460_A.Tag}
+    Click    /Window/Window/Pane/Button[@Name="Next >"]
+    Click    /Window/Pane/Button[@Name="Change Address..."]
+    Wait Until Element Exist    /Window/Window[@Name="Change Address"]
+    Press Key    s'ALT+D'
+    Press Key    s'${2460_A.DeviceID}'
+    Press Key    s'TAB'
+    Press Key    s'${2460_A.ModbusAddress}'
+    Click Hold   /Window/Window/Pane/Button[@Name="OK"]    1000
+    Wait Until Element Does Not Exist    /Window/Window[@Name="Change Address"]
+    Click Hold   /Window/Pane/Button[@Name="Verify Communication"]    3000
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Window/Text
+    Should Contain    ${Result}    Communication with ${2460_A.DeviceType} is OK.
+    Click Hold   /Window/Window/Button[@Name="OK"]    3000
+    Click   /Window/Button[@Name="Next >"]      
+    Wait Until Element Exist    /Window[@Name="2460 System Hub Configuration - SYSHUB-211"]  
+    Click     /Window/Button[@Name="Next >"] 
+    #Multiple loading popups are appearing
+    Sleep    2
+    Wait Until Element Exist    /Window[@Name="2460 System Hub Tank Database - SYSHUB-211"] 
+    Click   /Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window[@Name="2460 System Hub Redundancy - SYSHUB-211"]
+    Click    /Window/Button[@Name="Next >"]     
+    Wait Until Element Exist    /Window[@Name="2460 System Hub Summary - SYSHUB-211"]
+    Click    /Window/Button[@Name="Finish"]  
+    Wait Until Element Exist    /Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Text 
     Should Be Equal    ${Result}    The ${2460_A.DeviceType} ${2460_A.Tag} was successfully installed.
-    Wait For And Mouse Over And Click Element    name=OK
+    Click    /Window/Button[@Name="OK"]
     Expand Tree structure
 
 Install 2410 Tank Hub
     Install New Device
-    Wait For And Mouse Over Element    accessibility_id=28416     timeout=10
-    Select Element From ComboBox    accessibility_id=28416    name=${2410_A.DeviceType}    index=2
-    Wait Until Page Contains Element     accessibility_id=28417     timeout=20
-    Clear Text    accessibility_id=28417
-    Input Text    accessibility_id=28417    ${2410_A.Tag}
-    Wait For And Mouse Over And Click Element    name=Next >                                       
-    Switch Application    Desktop
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Communication - ${2410_A.Tag}    timeout=15        
-    Click Button    name=Via 2460
-    Wait For And Mouse Over And Click Element    name=Change Address on Device...                   
-    Wait For And Mouse Over And Click Element    name=Change Address         timeout=15             
-    Send Keys    ${Keys.ALT}    d    ${Keys.ALT}                                                    
-    Send Keys    ${2410_A.DeviceID}                                                                 
-    Send Keys    ${Keys.TAB}                                                                        
-    Send Keys    ${2410_A.ModbusAddress}
-    Wait Until Page Contains Element     name=OK     timeout=20
-    Wait For And Mouse Over And Click Element    name=OK
-    Wait For And Mouse Over And Click Element    name=Verify Communication    timeout=10
-    Wait For And Mouse Over And Click Element    name=Rosemount TankMaster
-    Wait For And Mouse Over And Click Element    accessibility_id=65535                             
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name                           
-    Log    ${Result}
-    Should Contain    ${Result}    Communication with 2410 is OK, 2410 version: ${2410_A.SWVer}
-    Wait For And Mouse Over And Click Element    name=OK
-    Wait For And Mouse Over And Click Element    accessibility_id=28423
-    ${Result}=    Get Element Attribute    accessibility_id=28423    Value.Value                    
-    Should Be Equal    ${Result}    ${2410_A.DeviceID}
-    Log    ${Result}
-    Wait For And Mouse Over And Click Element    name=Next >
-    # 2410 Tank Data base window
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Tank Database - ${2410_A.Tag}    timeout=15
-    Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    
-    # 2410 Tank Hub Device Tags
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Device Tags - ${2410_A.Tag}    timeout=15
-    Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    
-    # 2410 Tank Hub Local Display
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Local Display - ${2410_A.Tag}    timeout=15
-    Wait Until Page Contains Element     name=Next >     timeout=20
-    Wait For And Mouse Over And Click Element    name=Next >    
-    # 2410 Tank Hub Summary
-    Wait For And Mouse Over And Click Element    name=2410 Tank Hub Summary - ${2410_A.Tag}    timeout=15
-    Wait Until Page Contains Element     name=Finish     timeout=20
-    Wait For And Mouse Over And Click Element    name=Finish    
-    # check instruction message
-    Wait Until Page Contains Element     name=Rosemount TankMaster     timeout=20
-    # information message validation
-    Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
-    Wait For And Mouse Over And Click Element    accessibility_id=65535    
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              
-    Log    ${Result}
+    Press Key    s'HOME'   /Window/Window/Pane/ComboBox
+    Expand Combobox    /Window/Window/Pane/ComboBox
+    Click   /Window/Window/Pane/ComboBox/List/ListItem[3][@Name='2410 Tank Hub']
+    Set Text To Textbox    /Window/Window/Pane/Edit    ${2410_A.Tag}
+    Click    /Window/Window/Pane/Button[@Name="Next >"]
+    Click    /Window/Pane/Button[@Name="Via 2460"]
+    Click    /Window/Pane/Button[@Name="Change Address on Device..."]
+    Set Text To Textbox    /Window/Window/Pane/Edit    ${2410_A.DeviceID}
+    Press Key    s'TAB'
+    Press Key    s'${2410_A.ModbusAddress}'
+    Click Hold  /Window/Window/Pane/Button[@Name="OK"]    1000
+    Wait Until Element Does Not Exist    /Window/Window[@Name="Change Address"]
+    Click Hold   /Window/Pane/Button[@Name="Verify Communication"]     3000
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"] 
+    ${Result}     Get Name From Element    /Window/Window/Text 
+    Should Contain    ${Result}    Communication with 2410 is OK, 2410 version: ${2410_A.SWVer} 
+    Wait Until Element Exist        /Window/Window/Button[@Name="OK"]                                       
+    Click Hold  /Window/Window/Button[@Name="OK"]    5000
+    Click    /Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window[@Name="2410 Tank Hub Tank Database - HUB-110"]
+    Click    /Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window[@Name="2410 Tank Hub Device Tags - HUB-110"]
+    Click    /Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window[@Name="2410 Tank Hub Local Display - HUB-110"]
+    Click    /Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window[@Name="2410 Tank Hub Summary - HUB-110"]
+    Click    /Window/Button[@Name="Finish"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]   
+    ${Result}    Get Name From Element    /Window/Window/Text 
     Should Contain    ${Result}    The device(s) will be automatically installed in TankMaster database.
-    Wait For And Mouse Over And Click Element    name=OK  
-    #configuration information validation    
-    Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
-    Wait For And Mouse Over And Click Element    accessibility_id=65535    
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name              
-    Log    ${Result}
-    Should Contain    ${Result}        Configuration of value units has been changed and this requires an update of 2460 in TankServer database.  
-    Wait Until Page Contains Element     name=OK     timeout=20
-    Wait For And Mouse Over And Click Element    name=OK 
-    # check success message
-    Wait For And Mouse Over And Click Element    name=Rosemount TankMaster    timeout=15
-    Wait For And Mouse Over And Click Element    accessibility_id=65535      
-    ${Result}=    Get Element Attribute    accessibility_id=65535    Name    
-    Log   ${Result}
+    Click    /Window/Window/Button[@Name="OK"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Window/Text  
+    Should Contain    ${Result}    Configuration of value units has been changed and this requires an update of 2460 in TankServer database.
+    Click    /Window/Window/Button[@Name="OK"]
+    Wait Until Element Exist    /Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Text 
     Should Be Equal    ${Result}    The 2410 ${2410_A.Tag} was successfully installed.
-    Wait For And Mouse Over And Click Element    name=OK
+    Click    /Window/Button[@Name="OK"]
+    Expand Tree structure
+    
+Check communication to LT-TK-1 
+    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="LT-TK-1"]
+    Click    /Window/ToolBar/Button[@Name="Properties"]
+    #Sleep need to be put here as default time outs are not working due to multiple pop ups.
+    Sleep    15  
+    Click   /Window/Window/Pane/Button[@Name="Change..."] 
+    ${Result}=    Run Keyword And Return Status   Element Should Exist    /Window/Window/Window[@Name="Rosemount TankMaster"]
+    Log To Console    ${Result}
+    IF    ${Result} == True
+        Click    /Window/Window/Window/Button[@Name="Yes"]
+    END 
+    Click    /Window/Window/Window/Pane/Button[@Name="Verify Communication"]
+    Wait Until Element Exist    /Window/Window/Window/Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Window/Window/Window/Text 
+    Should Be Equal    ${Result}    Communication with 5900S RLG is OK
+    Click    /Window/Window/Window/Window/Button[@Name="OK"]
+    Click     /Window/Window/Window/Pane/Button[@Name="OK"] 
+    Click Hold   /Window/Window/Button[@Name="Apply"]   5000
+    Click Hold    /Window/Window/Button[@Name="OK"]    2000 
+
+Check communication to ATD-TK-1
+    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="ATD-TK-1"]
+    Click    /Window/ToolBar/Button[@Name="Properties"]
+    #Sleep need to be put here as default time outs are not working due to multiple pop ups.
+    Sleep    30
+    Click      /Window/Window/Pane/Button[@Name="Change..."]   
+    Wait Until Element Exist    /Window/Window/Window[@Name="22XX ATD Communication"]
+    Click    /Window/Window/Window/Pane/Button[@Name="Verify Communication"]
+    Wait Until Element Exist    /Window/Window/Window/Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Window/Window/Window/Text 
+    Should Be Equal    ${Result}    Communication with 22XX ATD is OK
+    Click   /Window/Window/Window/Window/Button[@Name="OK"]    
+    Click    /Window/Window/Window/Pane/Button[@Name="OK"]
+    Click Hold   /Window/Window/Button[@Name="Apply"]   5000
+    Click Hold    /Window/Window/Button[@Name="OK"]    2000
+
+Install a Tank
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[@Name="Tanks"]
+    Click    /Menu/MenuItem[@Name="Install New..."]
+    Wait Until Element Exist    /Window/Window[@Name="General"]
+    Press Key    s'HOME'   /Window/Window/Pane/ComboBox
+    Expand Combobox    /Window/Window/Pane/ComboBox
+    Click   /Window/Window/Pane/ComboBox/List/ListItem[1][@Name='Fixed Roof']
+    Set Text To Textbox    /Window/Window/Pane/Edit    ${TK.Tag}
+    Click    /Window/Window/Button[@Name="Next >"]
+    Double Click    /Window/Window/Pane/Tree[1]/TreeItem[@Name="${2460_A.Tag}"]
+    Double Click    /Window/Window/Pane/Tree[1]/TreeItem/TreeItem[@Name="${2410_A.Tag}"]
+    Double Click    /Window/Window/Pane/Tree[1]/TreeItem/TreeItem/TreeItem[@Name="${ATD_TK_1.Tag}"]
+    Double Click    /Window/Window/Pane/Tree[1]/TreeItem/TreeItem/TreeItem[@Name="${LT_TK_1.Tag}"]
+    Click    /Window/Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window/Window[@Name="Configuration"]
+    Click    /Window/Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window/Window[@Name="Value Entry"]
+    Click    /Window/Window/Button[@Name="Next >"]
+    Wait Until Element Exist    /Window/Window[@Name="Summary"]
+    Click    /Window/Window/Button[@Name="Finish"]
+    Wait Until Element Exist    /Window/Window/Window[@Name="Rosemount TankMaster"]
+    ${Result}    Get Name From Element    /Window/Window/Window/Text
+    Should Be Equal    ${Result}    Tank ${TK.Tag} was successfully installed.
+    Click    /Window/Window/Window/Button[@Name="OK"]
     Expand Tree structure
 
+#Need to work on tables
+#Check Tank Data
+    #Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[1]/TreeItem[2]/TreeItem[@Name="${TK.Tag}"]
+    #Click    /Menu/MenuItem[@Name="Open Tank View..."]
+    #Wait Until Element Exist    /Window/Pane[1]/Window[@Name="This Workstation/${TK.Tag} - Tank View "]
+    #Click    /Window/Pane[1]/Window/Text[2]/Pane[3]
+    #${Result}    Get All Data From Grid    /Window/Pane[1]/Window/Text[2]/Pane[3]
+    #Log To Console    ${Result}
 
-Check communication to installed Devices
-    [Arguments]     ${device_name1}    ${device_message} 
-    Comment     "${device_name1}    ${device_message}"
-    Wait For And Mouse Over And Click Element    name=${device_name1}              timeout=30                             
-    Select Elements From Context Menu    name=${device_name1}    accessibility_id=32821                   
-    Wait For And Mouse Over Element    accessibility_id=12321     timeout=40
-    Wait Until Page Contains Element     accessibility_id=12321     timeout=40
-    Wait For And Mouse Over And Click Element    accessibility_id=12321    timeout=40  
-    Wait For And Mouse Over And Click Element    ${device_message}    timeout=30
-    ${Result}=    Get Element Attribute    ${device_message}   Value.Value
-    Log To Console  ${Result}
-    Should Contain    ${Result}        Device is configured.  
-    Wait For And Click Element    name=OK                    timeout=30
-    
-   
+Check Tree View
+    ${Result}    Get All Visible Treeitems Names    /Window/Pane[2]/Pane/Tree
+    IF    '${Result}[5]'=='${2460_A.Tag}' and '${Result}[6]'=='${2410_A.Tag}' and '${Result}[7]'=='${ATD_TK_1.Tag}' and '${Result}[8]' =='${LT_TK_1.Tag}'
+        Log     Devices are displayed under appropriate tanks
+    ELSE
+        Fail    Devices are not displayed
+    END
+Remove any one device from tank
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[1]/TreeItem[2]/TreeItem[@Name="${TK.Tag}"]
+    Click    /Menu/MenuItem[@Name="Properties"]
+    Wait Until Element Exist    /Window/Window[@Name="Tank Configuration - ${TK.Tag}"]
+    Click    /Window/Window/Tab/TabItem[@Name="Configuration"]
+    Click    /Window/Window/Pane/Button[@Name="Change..."]
+    Double Click    /Window/Window/Window/Pane/Tree[2]/TreeItem[@Name="${ATD_TK_1.Tag}"]
+    Click    /Window/Window/Window/Pane/Button[@Name="OK"]
+    Wait Until Element Exist    /Window/Window/Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Window/Window/Button[@Name="OK"]
+    Click    /Window/Window/Button[@Name="Apply"] 
+    Click    /Window/Window/Button[@Name="OK"]
+
+Uninstall Tank
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[1]/TreeItem[2]/TreeItem[@Name="${TK.Tag}"]
+    Click    /Menu/MenuItem[@Name="Uninstall"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Button[@Name="Yes"]
+
+Close Winsetup
+    Click    /Window/TitleBar/Button[@Name="Close"]
