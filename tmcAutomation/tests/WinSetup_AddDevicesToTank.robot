@@ -1,7 +1,8 @@
 *** Settings ***
 Documentation     Add devices to tanks wired      
 Resource    ../resources/config.resource
-Resource    ../resources/Winsetup.resource
+Resource    ../resources/WinSetup/Base.resource
+Resource    ../resources/WinSetup/Tanks.resource
 
 
 

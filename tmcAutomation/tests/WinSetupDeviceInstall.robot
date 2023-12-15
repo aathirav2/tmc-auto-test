@@ -1,7 +1,9 @@
 *** Settings ***
 Documentation    WinSetup Device installation wired       
 Resource    ../resources/config.resource
-Resource    ../resources/Winsetup.resource
+Resource    ../resources/WinSetup/Base.resource
+Resource    ../resources/WinSetup/Devices.resource
+Resource    ../resources/WinSetup/Protocol.resource
 
 
 *** Test Cases ***
