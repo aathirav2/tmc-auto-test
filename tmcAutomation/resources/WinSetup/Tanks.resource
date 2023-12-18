@@ -43,7 +43,7 @@ Install a Tank
 
 Check Tree View
     ${Result}    Get All Visible Treeitems Names    /Window/Pane[2]/Pane/Tree
-    IF    '${Result}[5]'=='${2460_A.Tag}' and '${Result}[6]'=='${2410_A.Tag}' and '${Result}[7]'=='${ATD_TK_1.Tag}' and '${Result}[8]' =='${LT_TK_1.Tag}'
+    IF    '${Result}[5]'=='${2460_A.Tag}' and '${Result}[6]'=='${2410_A.Tag}' and '${Result}[7]'=='${LT_TK_1.Tag}' and '${Result}[8]' =='${ATD_TK_1.Tag}'
         Log     Devices are displayed under appropriate tanks
     ELSE
         Fail    Devices are not displayed
