@@ -91,7 +91,7 @@ Install 2410 Tank Hub
     Expand Tree structure
     
 Check communication to LT-TK-1 
-    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="LT-TK-1"]
+    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="${LT_TK_1.Tag}"]
     Click    /Window/ToolBar/Button[@Name="Properties"]
     #Sleep need to be put here as default time outs are not working due to multiple pop ups.
     Sleep    15  
@@ -111,7 +111,7 @@ Check communication to LT-TK-1
     Click Hold    /Window/Window/Button[@Name="OK"]    2000 
 
 Check communication to ATD-TK-1
-    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="ATD-TK-1"]
+    Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="${ATD_TK_1.Tag}"]
     Click    /Window/ToolBar/Button[@Name="Properties"]
     #Sleep need to be put here as default time outs are not working due to multiple pop ups.
     Sleep    30
@@ -125,3 +125,25 @@ Check communication to ATD-TK-1
     Click    /Window/Window/Window/Pane/Button[@Name="OK"]
     Click Hold   /Window/Window/Button[@Name="Apply"]   5000
     Click Hold    /Window/Window/Button[@Name="OK"]    2000
+
+Uninstall Field devices
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="${ATD_TK_1.Tag}"]
+    Click    /Menu/MenuItem[@Name="Uninstall"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Button[@Name="Yes"]
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem/TreeItem[@Name="${LT_TK_1.Tag}"]
+    Click    /Menu/MenuItem[@Name="Uninstall"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Button[@Name="Yes"]
+
+Uninstall Tank Hub
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem/TreeItem[@Name="${2410_A.Tag}"]
+    Click    /Menu/MenuItem[@Name="Uninstall"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Button[@Name="Yes"]
+
+Uninstall System Hub
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[2]/TreeItem[@Name="${2460_A.Tag}"]
+    Click    /Menu/MenuItem[@Name="Uninstall"]
+    Wait Until Element Exist    /Window/Window[@Name="Rosemount TankMaster"]
+    Click    /Window/Window/Button[@Name="Yes"]
