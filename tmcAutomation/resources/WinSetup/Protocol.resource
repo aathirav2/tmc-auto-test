@@ -22,3 +22,11 @@ Uninstall Protocol
     Set Checkbox State    /Window/Window/Pane/CheckBox[1]    ${False}
     Click    /Window/Window/Button[@Name="Apply"]
     Click    /Window/Window/Button[@Name="OK"] 
+
+Find Devices on Modbus
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[3]/TreeItem[1]/TreeItem[@Name="MbMaster.1"]
+    Click    /Menu/MenuItem[@Name="Find Devices..."]
+    Wait Until Element Exist    /Window/Window[@Name="Find Devices on MbMaster.1"]
+    Click    /Window/Window/Pane/Button[@Name="Start"]
+    Wait Until Element Is Enabled    /Window/Window/Pane/Button[@Name="Close"]
+    

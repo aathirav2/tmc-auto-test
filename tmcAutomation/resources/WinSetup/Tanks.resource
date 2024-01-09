@@ -34,12 +34,13 @@ Install a Tank
 
 #Need to work on tables
 #Check Tank Data
-    #Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[1]/TreeItem[2]/TreeItem[@Name="${TK.Tag}"]
-    #Click    /Menu/MenuItem[@Name="Open Tank View..."]
-    #Wait Until Element Exist    /Window/Pane[1]/Window[@Name="This Workstation/${TK.Tag} - Tank View "]
-    #Click    /Window/Pane[1]/Window/Text[2]/Pane[3]
+    Right Click    /Window/Pane[2]/Pane/Tree/TreeItem/TreeItem/TreeItem[1]/TreeItem[2]/TreeItem[@Name="${TK.Tag}"]
+    Click    /Menu/MenuItem[@Name="Open Tank View..."]
+    Wait Until Element Exist    /Window/Pane[1]/Window[@Name="This Workstation/${TK.Tag} - Tank View "]
+    #Click    /Window/Pane[1]/Window/Text[2]/Pane[1]
+    #${Result}    Get Rectangle Bounding From Element    /Window/Window/Text[2]
     #${Result}    Get All Data From Grid    /Window/Pane[1]/Window/Text[2]/Pane[3]
-    #Log To Console    ${Result}
+    Log To Console    ${Result}
 
 Check Tree View
     ${Result}    Get All Visible Treeitems Names    /Window/Pane[2]/Pane/Tree
