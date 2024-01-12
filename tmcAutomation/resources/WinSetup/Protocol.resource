@@ -28,5 +28,7 @@ Find Devices on Modbus
     Click    /Menu/MenuItem[@Name="Find Devices..."]
     Wait Until Element Exist    /Window/Window[@Name="Find Devices on MbMaster.1"]
     Click    /Window/Window/Pane/Button[@Name="Start"]
-    Wait Until Element Is Enabled    /Window/Window/Pane/Button[@Name="Close"]
-    
+    Wait Until Element Is Enabled    /Window/Window/Pane/Button[@Name="Close"]    retries=30
+    #Data grid issue needs to be solved
+    #${Result}    Get All Data From Grid    /Window/Window/Pane/DataGrid
+    #Should Be Equal    ${Result}    ${2410_A.Tag}
