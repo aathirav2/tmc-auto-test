@@ -25,11 +25,54 @@ Login to WinOpi
 
 Accept the alarms
     Click    /Window/ToolBar/Button[@Name="Alarm Summary for the Current Alarm Group"]
-    Wait Until Element Exist    /Window/Pane[1]/Window[@Name="Alarm Summary - Group "All Tanks""]
+    #Alarm Summary - Group "All Tanks"
+    Wait Until Element Exist    /Window/Pane[1]/Window
     Click    /Window/Pane[1]/Window/Pane/Button[@Name="Accept All Alarms"]
     Wait Until Element Exist    /Window/Window[@Name="StmOpi"]
     Click    /Window/Window/Button[@Name="Yes"]
     Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
+
+Open all predefined tank views
+    Right Click    /Window/Pane[3]/Pane/Tree/TreeItem[1]/TreeItem/TreeItem[@Name="TK-01"]
+    Click  /Menu/MenuItem[@Name="View Tank"]    2000
+    Press Key    s'DOWN'
+    Press Key    s'ENTER'
+    #Tank View - Tank "TK-01"
+    Wait Until Element Exist    /Window/Pane[1]/Window
+    ${Window}=    Run Keyword And Return Status    Element Should Exist    /Window/Pane[1]/Window
+    IF    ${Window}==True
+        Log To Console  Tank view is opened
+    END
+    Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
+    Right Click    /Window/Pane[3]/Pane/Tree/TreeItem[1]/TreeItem/TreeItem[@Name="TK-01"]
+    Click  /Menu/MenuItem[@Name="View Tank"]    2000
+    Press Key    s'DOWN'
+    Press Key    s'DOWN'
+    Press Key    s'ENTER'
+    #Tank View Extended - Tank "TK-01"
+    Wait Until Element Exist    /Window/Pane[1]/Window
+    ${Window}=    Run Keyword And Return Status    Element Should Exist    /Window/Pane[1]/Window
+    IF    ${Window}==True
+        Log To Console     Tank view extended is opened
+    END
+    Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
+    Right Click    /Window/Pane[3]/Pane/Tree/TreeItem[1]/TreeItem/TreeItem[@Name="TK-01"]
+    Click  /Menu/MenuItem[@Name="View Tank"]    2000
+    Press Key    s'DOWN'
+    Press Key    s'DOWN'
+    Press Key    s'DOWN'
+    Press Key    s'DOWN'
+    Press Key    s'ENTER'
+    #Tank Inventory - Tank "TK-01"
+    Wait Until Element Exist    /Window/Pane[1]/Window
+    ${Window}=    Run Keyword And Return Status    Element Should Exist    /Window/Pane[1]/Window
+    IF    ${Window}==True
+        Log To Console     Tank Inventory is opened
+    END
+    Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
+
+Create new tank view as copy of predefined view
+    Click    /Window/ToolBar/Button[@Name="Program Options"]
     
 Close WinOpi
     Click    /Window/TitleBar/Button[@Name="Close"]

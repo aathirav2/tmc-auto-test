@@ -113,6 +113,10 @@ Debug and create report file
     #Verify that all running TM processes are detected
     #Need to work on tables
     Click    /Window/Window/Button[@Name="Create Report File"]
+    Sleep    60
+
+Open debug report and check it
+    
 Close System administrator
     ${LogOff}=    Run Keyword And Return Status    Element Should Exist     /Window/Button[@Name="Log off"]
     IF    ${LogOff} == True

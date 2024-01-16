@@ -13,5 +13,5 @@ Debug report
     Start WinSetup using StmAdministrator
     Start WinOpi using StmAdministrator
     Debug and create report file
-    #Open debug report and check it
+    Open debug report and check it
     Close System administrator
