@@ -14,8 +14,8 @@ Tank Views
     Expand Tree structure
     Open all predefined tank views
     Create new tank view as copy of predefined view
-    Create new tank view as copy of predefined view with modifications
-    #Create new tank view from scratch
+    Create new tank view as copy of predefined view with modifications    #Not working    
+    Create new tank view from scratch                                     #Not working
     Set default double-click action for tank
     Close WinOpi
  

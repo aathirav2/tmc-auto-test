@@ -9,8 +9,7 @@ Library    FlaUILibrary
 Start WinSetup
     FlaUILibrary.Launch Application    ${winSetup}
     #Loading time for application
-    Sleep    10 
-    Wait Until Element Exist    /Window/Window[@Name="Logon to TankMaster"]
+    Sleep    10
 
 Login to WinSetup
     ${Logon}=    Run Keyword And Return Status    Element Should Exist    /Window/Window[@Name="Logon to TankMaster"]

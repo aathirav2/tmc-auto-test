@@ -116,6 +116,9 @@ Debug and create report file
     Sleep    60
 
 Open debug report and check it
+    Directory Should Not Be Empty    C:\\Rosemount\\TankMaster\\CrashLog
+    #${Result}    Get File    C:\\Rosemount\\TankMaster\\CrashLog
+    
     
 Close System administrator
     ${LogOff}=    Run Keyword And Return Status    Element Should Exist     /Window/Button[@Name="Log off"]

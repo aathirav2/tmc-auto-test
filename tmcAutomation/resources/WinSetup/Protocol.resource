@@ -29,6 +29,9 @@ Find Devices on Modbus
     Wait Until Element Exist    /Window/Window[@Name="Find Devices on MbMaster.1"]
     Click    /Window/Window/Pane/Button[@Name="Start"]
     Wait Until Element Is Enabled    /Window/Window/Pane/Button[@Name="Close"]    retries=30
+    #${Result}    Get Name From Element    /Window/Window/Pane/DataGrid/DataItem[5]/Text[@Name="SYSHUB-210"]
+    #Log To Console    ${Result}
     #Data grid issue needs to be solved
-    #${Result}    Get All Data From Grid    /Window/Window/Pane/DataGrid
+    #${Result}    Get All Data From Grid    /Window/Window/Pane/DataGrid/DataItem[1]
     #Should Be Equal    ${Result}    ${2410_A.Tag}
+    grid
