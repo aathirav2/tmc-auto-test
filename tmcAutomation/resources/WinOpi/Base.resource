@@ -2,8 +2,11 @@
 Documentation    Common functions across WinSetup application.
 Resource    ../../resources/config.resource
 Resource    ../../resources/config_credentials.resource
-Library    FlaUILibrary
- 
+Library    FlaUILibrary      screenshot_dir=None  
+Library    String
+
+*** Variables *** 
+${index}
 
 *** Keywords ***
 Start WinOpi
@@ -75,7 +78,7 @@ Open all predefined tank views
     Log To Console     Tank Inventory is opened
     Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
 
-Create new tank view as copy of predefined view
+#Create new tank view as copy of predefined view
     Open Tank view
     Press Key    s'DOWN'
     Press Key    s'DOWN'
@@ -86,46 +89,53 @@ Create new tank view as copy of predefined view
     Log To Console     New tank view as copy of predefined tank view is created
     Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
 
-Create new tank view as copy of predefined view with modifications
+Make modification in custom view
     Open Tank view
     Press Key    s'UP'
-    Press Key    s'UP'
-    Press Key    s'UP'
+    #Press Key    s'UP'
+    #Press Key    s'UP'
     Press Key    s'ENTER'
-    #Tank View - Tank "TK-01"
+    #Tank View - Tank "${TK.Tag}"
     Wait Until Element Exist    /Window/Pane[1]/Window
     Sleep    4
     Press Key    s'CTRL+E'
     ${Element}=    Run Keyword And Return Status    Element Should Exist    /Window/Pane[1]/Window/Pane/Button[@Name="Help"]
     IF    ${Element}==True
+        Click    /Window/Pane[1]/Window/Pane/Button[@Name="Help"]
         Press Key    s'DELETE'
         Log To Console     Copy of Tank view is modified by deleting help command button
     ELSE
         Focus    /Window/Window/ToolBar[@Name="Object Bar"]
-        Focus    /Window[2]/Window/ToolBar/Button[5]    CommandButton
+        Focus    /Window[2]/Window/ToolBar/Button[5][@Name="CommandButton"]
         Drag And Drop    /Window[2]/Window/ToolBar/Button[5][@Name="CommandButton"]       /Window/Pane[1]/Window/Pane
     END
     Press Key    s'CTRL+F4'
+    #Open the view
 
-Create new tank view from scratch
+Edit created custom view from scratch 
     Open Tank view
     Press Key    s'UP'
-    Press Key    s'UP'
+    #Press Key    s'UP'
     Press Key    s'ENTER'
-    Unnamed Custom View - Tank "${TK.Tag}"
+    #Unnamed Custom View - Tank "${TK.Tag}"
     Click    /Window/Pane[1]/Window/Pane
     Press Key    s'CTRL+E'
-    Click    /Window/Pane[1]/Window/Pane/Document
+    Right Click    /Window/Pane[1]/Window/Pane/Document
+    Wait Until Element Exist    /Window/Window[@Name="Property Sheet"]
+    Expand Combobox    /Window/Window[1]/ComboBox
+    Click    /Window/Window[1]/ComboBox/List/ListItem[@Name="Label1"]
+
     #Enter the tank level
-    Set Text To Textbox    /Window/Pane[1]/Window/Pane/Document    2.9
-    Focus    /Window/Window/ToolBar[@Name="Object Bar"]
-    Focus    /Window/Window/ToolBar/Button[@Name="CommandButton"]
-    Drag And Drop    /Window/Window/ToolBar/Button[@Name="CommandButton"]    /Window/Pane[1]/Window/Pane
-    Click    /Window/Pane[1]/Window/Pane/Button[@Name="CmdButton1"]
-    Clear Blacklist
-    Clear Whitelist
-    Set Text To Textbox    /Window/Pane[1]/Window/Pane/Button[@Name="CmdButton1"]    Close
+    #Set Text To Textbox    /Window/Pane[1]/Window/Pane/Document    2.9
+    #Focus    /Window/Window/ToolBar[@Name="Object Bar"]
+    #Focus    /Window/Window/ToolBar/Button[@Name="CommandButton"]
+    #Drag And Drop    /Window/Window/ToolBar/Button[@Name="CommandButton"]    /Window/Pane[1]/Window/Pane
+    #Click    /Window/Pane[1]/Window/Pane/Button[@Name="CmdButton1"]
+    #Clear Blacklist
+    #Clear Whitelist
+    #Set Text To Textbox    /Window/Pane[1]/Window/Pane/Button[@Name="CmdButton1"]    Close
     Press Key    s'CTRL+F4'
+    #Open the custom view
 
 Set default double-click action for tank
     Click    /Window/ToolBar/Button[@Name="Program Options"]
@@ -139,8 +149,8 @@ Set default double-click action for tank
     Wait Until Element Exist    /Window/Pane[1]/Window
     ${Window}    Get Name From Element    /Window/Pane[1]/Window
     Should Contain    ${Window}   Tank View - Tank "${TK.Tag}"
-    #Should Contain    ${Window}   Tank View Extended - Tank "${TK.Tag}"
     Click    /Window/Pane[1]/Window/Pane/Button[@Name="Close"]
+    #Need to set it for custom view as well
 
     
 Close WinOpi
@@ -236,3 +246,52 @@ Delete modification done for existing group
     Click    /Window/Window/Window/Pane/Button[@Name="OK"]
     Click    /Window/Window/Button[@Name="Apply"]
     Click    /Window/Window/Button[@Name="OK"]
+
+Create custom view as copy of existing tank view
+    Click    /Window/ToolBar/Button[@Name="Program Options"]
+    Wait Until Element Exist   /Window/Window[@Name="Operator's Interface Options"]
+    Click    /Window/Window/Tab/TabItem[@Name="Custom Views"]
+    Click    /Window/Window/Pane/Button[@Name="Copy"]
+    #FOR    ${index}     IN RANGE     1    15    
+            #Press Key    s'DOWN'
+            #${element_enabled}=    Is Element Enabled    /Window/Window/Pane/Button[@Name="Delete"]
+            #Continue For Loop If    ${element_enabled}==True
+            #Exit For Loop If    ${element_enabled}==False
+    #END
+    Click    /Window/Window/Button[@Name="OK"]
+
+Create custom view from scratch 
+    Click    /Window/ToolBar/Button[@Name="Program Options"]
+    Wait Until Element Exist   /Window/Window[@Name="Operator's Interface Options"]
+    Click    /Window/Window/Tab/TabItem[@Name="Custom Views"]
+    Click    /Window/Window/Pane/Button[@Name="New"]
+    Click    /Window/Window/Button[@Name="OK"]
+
+Create Report
+    #[Arguments]     ${reportName}       
+    #Right Click    /Window/Pane[3]/Pane/Tree/TreeItem[@Name="Reports"]
+    #Click    /Menu/MenuItem[@Name="Add Report"]
+    #Wait Until Element Exist    /Window/Window[@Name="Report Data"]
+    #Expand Combobox    /Window/Window/Pane/ComboBox[5]
+    #Click    /Window/Window/Pane/ComboBox[5]/List/ListItem[@Name="${reportName}"]
+    #Expand Combobox    /Window/Window/Pane/ComboBox[1]
+    #Click    /Window/Window/Pane/ComboBox[1]/List/ListItem[@Name="Default"]
+    #Select Radiobutton    /Window/Window/Pane/Button[@Name="Tank(s)"]
+    #Click    /Window/Window/Pane/List[1]/ListItem[@Name="File"]
+    #Click    /Window/Window/Pane/Button[@Name="Add >"]
+    #Click    /Window/Window/Pane/Button[@Name="Config..."]
+    ${SystemTime}    Get Time    mm:ss
+    ${RequiredTime}    Split String    ${SystemTime}
+    Split String From Right    ${RequiredTime[1]}    separator=:    max_split=-1
+    Log To Console    ${RequiredTime[1]}
+
+    
+
+#Create Massbalance Report 
+
+#Publish report and check the files
+
+#Schedule report publication 
+
+
+        

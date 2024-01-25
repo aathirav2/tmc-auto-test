@@ -13,6 +13,7 @@ Tank Views
     Accept the alarms
     Expand Tree structure
     Open all predefined tank views
+    Create custom view as copy of existing tank view
     Create new tank view as copy of predefined view
     Create new tank view as copy of predefined view with modifications    #Not working    
     Create new tank view from scratch                                     #Not working
